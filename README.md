@@ -7,6 +7,8 @@
 
 JSHING es una plataforma de seguridad ofensiva que opera bajo el principio "Defend to Attack" (Defender para Atacar). Detecta cuando los visitantes abren las herramientas de desarrollador del navegador y establece un canal de comando y control para tomar control del navegador del atacante.
 
+![Imagen](https://repository-images.githubusercontent.com/1178138833/f7e8909b-f5b4-475b-858e-455059cc14ca)
+
 ## Tecnologías Utilizadas
 
 ### Backend
