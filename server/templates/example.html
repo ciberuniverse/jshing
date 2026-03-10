@@ -1,0 +1,38 @@
+<html>
+  <head>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" 
+          rel="stylesheet" 
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" 
+          crossorigin="anonymous">    
+  </head>
+
+  <body class="bg-light d-flex justify-content-center align-items-center vh-100">
+
+    <div class="card shadow p-4" style="width: 350px;">
+      <div class="text-center mb-3">
+        <img src="https://media.tenor.com/BR5awKUVVt4AAAAi/weirdcore.gif" width="80" class="rounded-circle">
+        <h4 class="mt-2">Acceso JSHING</h4>
+      </div>
+
+      <form>
+        <div class="mb-3">
+          <label for="username" class="form-label">Usuario</label>
+          <input type="text" class="form-control" id="username" name="username" placeholder="Ingresa tu usuario">
+        </div>
+
+        <div class="mb-3">
+          <label for="password" class="form-label">Contraseña</label>
+          <input type="password" class="form-control" id="password" name="password" placeholder="Ingresa tu contraseña">
+        </div>
+        <!-- admin:QWx0byBnaWwgZWwgcXVlIGVzdGEgaW50ZW50YW5kbyBrdWFraWFybm9z -->
+        <button type="submit" class="btn btn-success w-100">Administrar</button>
+      </form>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" 
+            integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" 
+            crossorigin="anonymous"></script>
+
+    <script src="{{ url_for('static', filename='jshing.js') }}"></script>
+  </body>
+</html>

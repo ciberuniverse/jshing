@@ -1,0 +1,62 @@
+{
+     "honey_url": "http://127.0.0.1:9090",
+     "local_mode": false,
+     "endpoints_disponibles": {
+          "data": [
+               {
+                    "endpoint": "/static/<path:filename>",
+                    "methods": [
+                         "GET",
+                         "OPTIONS",
+                         "HEAD"
+                    ]
+               },
+               {
+                    "endpoint": "/api/v2/user/dinamic",
+                    "methods": [
+                         "GET",
+                         "OPTIONS",
+                         "HEAD",
+                         "POST"
+                    ]
+               },
+               {
+                    "endpoint": "/api/v2/admin/malicius_users",
+                    "methods": [
+                         "GET",
+                         "OPTIONS",
+                         "HEAD",
+                         "POST"
+                    ]
+               },
+               {
+                    "endpoint": "/api/v2/admin",
+                    "methods": [
+                         "GET",
+                         "OPTIONS",
+                         "HEAD"
+                    ]
+               },
+               {
+                    "endpoint": "/api/v2/admin/upload_payload",
+                    "methods": [
+                         "OPTIONS",
+                         "POST"
+                    ]
+               },
+               {
+                    "endpoint": "/login",
+                    "methods": [
+                         "GET",
+                         "OPTIONS",
+                         "HEAD",
+                         "POST"
+                    ]
+               }
+          ],
+          "errors": [],
+          "status": 200
+     },
+     "token": "Nzc0ZDY5ZTE3OTYzMmJkOWE3MmI5YmVmZDI2ZGVmNzQ2OGJiNjIxZWUwNWUyZGVhNTFiZmRlYTljZTE4NGQ3NQ",
+     "in_function": null
+}
