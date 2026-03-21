@@ -1,4 +1,5 @@
 from flask import Flask, redirect, request, session, abort, render_template_string, render_template
+from flask_cors import CORS
 from sys import argv
 import bdd, os
 
@@ -33,13 +34,19 @@ else:
     token_flask = os.getenv("SECRET_KEY_JSHING")
 
 app = Flask(__name__)
+CORS(app, supports_credentials=True)
+
+app.config['SESSION_COOKIE_SAMESITE'] = 'None'
+app.config['SESSION_COOKIE_SECURE'] = True
+app.config['SESSION_COOKIE_HTTPONLY'] = False
+
 app.config["SECRET_KEY"] = token_flask
 
-@app.after_request
+"""@app.after_request
 def add_headers(response):
     response.headers["Access-Control-Allow-Origin"] = "http://127.0.0.1:3000" # ATENTO MODIFICAR EN CASO DE DEJAR EN SERVIDOR FUERA DE LOCAL
     response.headers["Access-Control-Allow-Credentials"] = "true"
-    return response
+    return response"""
 
 @app.before_request
 def verify_token():
@@ -65,6 +72,7 @@ def subir_obtener_info():
     if request.method == "GET":
 
         if not session or "uuid_m" not in session:
+            print(session)
             return bdd.response_json(401, "bad request")
 
         return bdd.obtener_payload_cliente(session["uuid_m"])

