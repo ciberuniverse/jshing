@@ -1,4 +1,4 @@
-import requests, json, subprocess, time, os
+import requests, json, subprocess, time, shutil, os
 import modules.config as cfg
 from hashlib import sha256
 from base64 import b64encode
@@ -6,9 +6,12 @@ from base64 import b64encode
 from modules.utils_jshing import cursor, print_ident
 
 # Guarda el archivo js para utilizar en un servidor externo
-def __save_javascript_file__():
-    
-    url_api = cfg.config_jshing["honey_url"]
+def __save_javascript_file__(url_api: str = None):
+    """Funcion encargada de guardar jshing modificado con los datos recibidos"""
+
+    # Si es que la funcion no se esta ocupando desde otra funcion (no recibe parametros) 
+    if not url_api:
+        url_api = cfg.config_jshing["honey_url"]
     
     try:
         with open("base_jshing.js", "r", encoding="UTF-8") as read_js, open("server/static/jshing.js", "w", encoding="UTF-8") as save_js:
@@ -23,14 +26,29 @@ def __save_javascript_file__():
         print("ERROR: No se logro modificar la ruta de la api en base_jshing.js")
         return
 
+def __gen_token_api_key__() -> str:
+    """Funcion encargada de enerar el token api para el funcionamiento del backend."""
+    to_token = str(time.time()) + __file__
+    return b64encode(sha256(to_token.encode("utf-8")).hexdigest().encode("utf-8")).decode("utf-8").replace("=", "")
+
+def __validate_url__(url_honey: str) -> str | None:
+
+    if any(x not in url_honey for x in ["http", "://"]):
+        print("ERROR: El formato de tu URL debe de verse algo asi https://tudominio.com o tambien https://224.0.23.5:9092")
+        return None
+    
+    url_honey = url_honey.strip()
+    url_honey = url_honey[:-1] if url_honey.endswith("/") else url_honey
+
+    return url_honey
+
 def start_api():
 
     ip_use = input(cursor() + ":: IP-USE :: ")
     port_use = input(cursor() + ":: API-PORT :: ")
 
-    to_token = str(time.time()) + __file__
-    signature = b64encode(sha256(to_token.encode("utf-8")).hexdigest().encode("utf-8")).decode("utf-8").replace("=", "")
-    
+    signature = __gen_token_api_key__()
+
     # Se guarda el token de autorizacion y administracion en la sesion de config_jhshing
     cfg.config_jshing["token"] = signature
 
@@ -125,12 +143,11 @@ def sync_api():
         url_honey = input(cursor() + ":: URL-API :: ")
         token_api = input(cursor() + ":: TOKEN-API :: ")
 
-        if any(x not in url_honey for x in ["http", "://"]):
-            print("ERROR: El formato de tu URL debe de verse algo asi https://tudominio.com o tambien https://224.0.23.5:9092")
+        # Si la url no es valida se vuelve a iterar el input
+        url_honey = __validate_url__(url_honey)
+        if not url_honey:
             continue
         
-        url_honey = url_honey.strip()
-        url_honey = url_honey[:-1] if url_honey.endswith("/") else url_honey
         break
     
     try:
@@ -152,4 +169,75 @@ def sync_api():
 
     print(f"Conectado a {cfg.config_jshing['honey_url']}")
     __save_javascript_file__()
+    return
+
+def export_api():
+
+    print("[+] Ingresa el dominio raiz donde sera hosteado el servidor. EJ: https://hony.pythonanyware.com")
+    while True:
+        # Mientras la url no sea valida se volvera a solicitar el dominio
+        url_honey = __validate_url__(input(cursor() + ":: DOMAIN :: "))
+
+        # Si la url no es valida vuelve a pedir el dominio
+        if not url_honey:
+            continue
+
+        break
+
+    token_url = __gen_token_api_key__()
+
+    # Se realiza un listado de las carpetas ubicadas en la ruta actual
+    # si no se encuentra la carpeta server, se le solicita al usuario ejecutar jshing desde
+    # la carpeta root de jshing
+    carpetas_en_ruta = os.listdir(".")
+    if "server" not in carpetas_en_ruta:
+        print("[-] Ejecuta esto en la carpeta raiz de JSHING. La carpeta server no se encuentra en ruta.")
+        return
+    
+    # Si existe ya una carpeta de servidor se borrara
+    if "honey_host" in carpetas_en_ruta:
+        shutil.rmtree("honey_host"); print("[+] Borrando archivos previos")
+
+    # Se guarda el archvio que ejecutaran los clientes que abran y ejecuten el archivo js
+    __save_javascript_file__(url_honey)
+
+    # Se copian los archivos del server original a la ruta actual para su modificacion
+    shutil.copytree("server", "honey_host"); print("[+] Archivos del servidor copiados a honey_host") 
+
+    # Se establece la linea de remplazo, esta sera la encargada de administar el log dentro de admin
+    replace = ':: HARDCODED_KEY ::'
+    with open("honey_host/api.py", "r", encoding="UTF-8") as mod_api:    
+        new_api_file = mod_api.read().replace(replace, token_url)
+
+    # Se guarda la nueva version de el archivo api.py en la carpeta
+    with open("honey_host/flask_app.py", "w", encoding="UTF-8") as mod_api_w:
+        mod_api_w.write(new_api_file)
+    
+    # Se borra la version base creada
+    os.remove("honey_host/api.py")
+
+    print(f"""
+=====================================================================
+Pasos para usar JSHing como panel de administración en PythonAnywhere
+=====================================================================
+
+1. Sube la carpeta `honey_host` a tu servidor, dentro de la carpeta raíz web.
+   (Ejemplo: `/home/tuusuario/honey_host`)
+
+2. Asegúrate de usar la versión más reciente de Python (actualmente 3.12).
+   Puedes verificarlo en la consola de PythonAnywhere.
+
+3. Crea un entorno virtual para aislar las dependencias del proyecto:
+   - Crea el entorno:   `mkvirtualenv api_jshing`
+   - Actívalo:          `workon api_jshing`
+
+4. Instala los paquetes requeridos desde el archivo `requirements.txt`:
+   `python3.12 -m pip install -r requirements.txt`
+
+5. Reinicia tu aplicación web desde el panel de control de PythonAnywhere
+   (sección "Web") o mediante la consola con `touch /var/www/tuusuario_pythonanywhere_com_wsgi.py`.
+
+TU TOKEN =>>
+{token_url}
+    """)
     return

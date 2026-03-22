@@ -6,4 +6,8 @@ config.jshing
 
 # Se ignoran los archivos cache
 server/__pycache__
+server/static/jshing.js
 modules/__pycache__
+
+# Se ignoran los servidores de prueba
+honey_host

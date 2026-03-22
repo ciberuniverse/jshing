@@ -10,6 +10,7 @@ JSHING V1.1.0 => Defend to Attack
 >> load_api     Carga y establece la conexion con la API-REST de JSHING.
 
 >> start_api    Inicia el servidor con la api integrada para su uso.
+>> export_api   Exporta el servidor para ser utilizado en la nube.
 
 ----------- Gestion de Usuarios
           

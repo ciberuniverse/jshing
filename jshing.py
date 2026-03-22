@@ -1,5 +1,5 @@
 
-from modules.api_conect import sync_api, use_mode, save_api, load_api, start_api
+from modules.api_conect import sync_api, use_mode, save_api, load_api, start_api, export_api
 from modules.utils_jshing import cursor, print_ident
 from modules.menu import more
 

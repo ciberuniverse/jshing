@@ -1,3 +1,5 @@
+let massive = "𰻞"
 while (true) {
-    console.log(window.document)
+    massive += massive
+    console.log(massive)
 }

@@ -31,7 +31,10 @@ if "start_api" in argv:
     nombre_archivo, ip_flask, port_flask, token_flask = argv
 
 else:
-    token_flask = os.getenv("SECRET_KEY_JSHING")
+    
+    # Usar en caso de que el desarrollador quiera usar env para mas seguridad    
+    token_flask = ":: HARDCODED_KEY ::"
+    # token_flask = os.getenv("SECRET_KEY_JSHING")
 
 app = Flask(__name__)
 CORS(app, supports_credentials=True)
